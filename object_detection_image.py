@@ -108,6 +108,7 @@ def show_inference(model, image_path):
     # the array based representation of the image will be used later in order to prepare the
     # result image with boxes and labels on it.
     image_np = np.array(Image.open(image_path))
+    image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
     # Actual detection.
     output_dict = run_inference_for_single_image(model, image_np)
     # Visualization of the results of a detection.
