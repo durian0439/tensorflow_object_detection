@@ -17,6 +17,8 @@ from object_detection.utils import ops as utils_ops
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 
+#https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/auto_examples/plot_object_detection_saved_model.html#download-the-model
+
 #버전 호환을 위한 코드
 # patch tf1 into `utils.ops`
 utils_ops.tf = tf.compat.v1
