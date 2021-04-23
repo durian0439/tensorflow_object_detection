@@ -55,8 +55,8 @@ category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABE
 
 #테스트 이미지 준비 : 왼쪽 폴더 열어보면, models 폴더 안에 테스트 이미지 이미 있다. 이것 활용한다.
 # If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
-PATH_TO_TEST_IMAGES_DIR = pathlib.Path('data/models/images')
-TEST_IMAGE_PATHS = sorted(list(PATH_TO_TEST_IMAGES_DIR.glob("*.jpg")))
+# PATH_TO_TEST_IMAGES_DIR = pathlib.Path('data/models/images')
+# TEST_IMAGE_PATHS = sorted(list(PATH_TO_TEST_IMAGES_DIR.glob("*.jpg")))
 
 
 
@@ -104,10 +104,12 @@ def run_inference_for_single_image(model, image):
 # output_dict = run_inference_for_single_image(detection_model, image_np)
 # print(output_dict)
 
-def show_inference(model, image_path):
+def show_inference(model, image_np):
     # the array based representation of the image will be used later in order to prepare the
     # result image with boxes and labels on it.
-    image_np = np.array(Image.open(image_path))
+
+    # image_np = np.array(Image.open(image_path)
+    
     # Actual detection.
     output_dict = run_inference_for_single_image(model, image_np)
     # Visualization of the results of a detection.
@@ -122,12 +124,42 @@ def show_inference(model, image_path):
         use_normalized_coordinates=True,
         line_thickness=8)
 
-    cv2.imshow(str(image_path), image_np)
-
-for image_path in TEST_IMAGE_PATHS:
-    show_inference(detection_model, image_path)
+    cv2.imshow('result', image_np)
 
 
 
-cv2.waitKey(0)
-cv2.destroyALLWindow()
+#이미지 경로에 있는 이미지 실행
+# for image_path in TEST_IMAGE_PATHS:
+#     show_inference(detection_model, image_path)
+
+#비디오 실행 코드
+cap = cv2.VideoCapture('data/models/video/dashcam2.mp4')
+
+#카메라의 영상 실행 코드
+# cap = cv2.VideoCapture(0)
+
+if cap.isOpened() == False:
+    print('Error opening video stream or file')
+
+else:
+    #반복문이 필요한 이유? 비디오는 여러 사진으로 구성되어있음.
+    while cap.isOpened():
+        #사진을 1장씩 가져와서 
+        ret, frame = cap.read()
+        #제대로 가져왔으면 화면 표시.
+        if ret == True:
+            # cv2.imshow("Frame", frame)
+            #추론하고 화면에 보여주는 코드
+            show_inference(detection_model, frame)
+
+            #키보드에서 esc를 누르면 exit하라
+            if cv2.waitKey(25) & 0xFF ==27:
+                break
+        else:
+            break
+
+cap.release()
+cv2.destroyAllWindow()
+
+# cv2.waitKey(0)
+# cv2.destroyALLWindow()
